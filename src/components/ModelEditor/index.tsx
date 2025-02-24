@@ -42,7 +42,7 @@ export const FieldEditor: FC = () => {
 
     return (
         <div className="flex flex-col justify-between px-2 w-full h-full items-center">
-            <div className="flex flex-col w-full py-4">
+            <div className="flex flex-col w-full py-4 gap-2">
                 <p className="text-start">Редактор полей</p>
                 <p className="text-center">
                     {initField ? `Редактирование: ${initField.name}` : "Создание нового поля"}
