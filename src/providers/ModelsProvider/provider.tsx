@@ -2,13 +2,14 @@ import { FC, createContext, useContext, useEffect, ReactNode, useReducer } from 
 import { ModelReducer } from "./reducer";
 import { ModelState } from "./model";
 import { getModelByID } from "../../mock";
+import { Field, getDefaultValueByType } from "../../store";
 
 interface IModelContext {
     state: ModelState;
     updateFieldParams: (id: number, name: string, type: "string") => void;
     updateFieldValue: (id: number, value: string) => void;
-    // addField: (name: string, type: "string", value: string) => void;
-    // removeField: (id: number) => void;
+    createField: () => Field;
+    removeField: (id: number) => void;
 }
 
 const initialState = {
@@ -63,11 +64,41 @@ export const ModelProvider: FC<{ modelId: number, children: ReactNode }> = ({ mo
         })
     }
 
+    const createField = () => {
+
+        const newField = {
+            id: Date.now(),
+            name: "Задайте имя",
+            type: "string",
+            value: getDefaultValueByType("string"),
+        } as Field
+
+        dispatch({
+            type: "CREATE_FIELD",
+            payload: {
+                newField
+            }
+        })
+
+        return newField;
+    }
+
+    const removeField = (id: number) => {
+        dispatch({
+            type: "REMOVE_FIELD",
+            payload: {
+                id
+            }
+        })
+    }
+
     return (
         <ModelContext.Provider value={{
             state: model,
             updateFieldParams,
-            updateFieldValue
+            updateFieldValue,
+            createField,
+            removeField
         }}>
             {children}
         </ModelContext.Provider>

@@ -9,7 +9,7 @@ export const ModelReducer = (state: ModelState, action: ModelActions): ModelStat
             return { ...state, isLoading: false };
 
         case "FETCH_ERROR":
-            return {...state, error: action.payload.errorMessage}
+            return { ...state, error: action.payload.errorMessage }
 
         case "SET_DATA":
             return {
@@ -18,6 +18,46 @@ export const ModelReducer = (state: ModelState, action: ModelActions): ModelStat
                 model: action.payload.model,
                 params: action.payload.params,
             };
+
+        case "CREATE_FIELD": {
+            const { id, name, type, value } = action.payload.newField;
+
+            return {
+                ...state,
+                params: [
+                    ...(state.params ?? []),
+                    { id, name, type }
+                ],
+                model: {
+                    ...state.model,
+                    paramValues: [
+                        ...(state.model?.paramValues ?? []),
+                        { paramId: id, value }
+                    ],
+                    modelId: state.model?.modelId ?? 0,
+                }
+            };
+        }
+
+        case "REMOVE_FIELD": {
+            const { id } = action.payload;
+          
+            return {
+              ...state,
+              params: [
+                ...(state.params?.filter(param => param.id !== id) ?? []),
+              ],
+              model: {
+                ...state.model,
+                paramValues: [
+                  ...(state.model?.paramValues?.filter(param => param.paramId !== id) ?? []),
+                ],
+                modelId: state.model?.modelId ?? 0,
+              }
+            };
+          }
+          
+
 
         case "UPDATE_FIELD_VALUE":
             if (!state.model) return state;
